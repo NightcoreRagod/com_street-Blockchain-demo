@@ -103,5 +103,6 @@ Retailer Dashboards (The Inventory Feed)
 To help shape the actual code or visual layouts for this experience, let me know:
 • Would you like a functional HTML/JavaScript template code block demonstrating how to style a Google Map with custom theme-park pins and plot a dynamic route based on a selected user persona?
 • Should we design the Figma user flow layout for the individual retail store inventory dashboard?
+(in a anime theme)
 
  
