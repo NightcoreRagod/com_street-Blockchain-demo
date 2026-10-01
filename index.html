@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commercial Street Multi-Agent Blockchain Retail Simulator</title>
+  <meta name="description" content="Real-time multi-agent simulation testing blockchain retail orchestrator load-balancing, foot-traffic routing, and Layer-2 rollup batching on Bangalore Commercial Street.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Header -->
+    <header class="main-header">
+      <div class="brand-section">
+        <div class="brand-badge">
+          <span class="pulsing-orb"></span>
+          <span class="badge-text">MAS ORCHESTRATOR v2.4</span>
+        </div>
+        <h1 class="brand-title">Commercial Street Multi-Agent Retail Simulator</h1>
+        <p class="brand-subtitle">Simulating autonomous shoppers, store POS nodes, and L2 rollup batching on Bangalore's Commercial Street</p>
+      </div>
+
+      <div class="header-metrics">
+        <div class="metric-card" id="metric-tps-card">
+          <div class="metric-label">NETWORK TPS</div>
+          <div class="metric-value highlight-cyan" id="metric-tps">0.0</div>
+          <div class="metric-sub" id="metric-tps-peak">Peak: 0.0 TPS</div>
+        </div>
+
+        <div class="metric-card" id="metric-gas-card">
+          <div class="metric-label">L1 GAS SAVINGS</div>
+          <div class="metric-value highlight-emerald" id="metric-gas-savings">0%</div>
+          <div class="metric-sub" id="metric-rollup-batches">0 Rollup Batches</div>
+        </div>
+
+        <div class="metric-card" id="metric-mempool-card">
+          <div class="metric-label">MEMPOOL BACKLOG</div>
+          <div class="metric-value highlight-amber" id="metric-mempool-count">0</div>
+          <div class="metric-sub" id="metric-batch-threshold">Target: 8 txs/block</div>
+        </div>
+
+        <div class="metric-card" id="metric-congestion-card">
+          <div class="metric-label">CONGESTION INDEX</div>
+          <div class="metric-value highlight-violet" id="metric-congestion">LOW (12%)</div>
+          <div class="metric-sub" id="metric-active-incentives">Incentives Active: 0</div>
+        </div>
+
+        <div class="header-action-group">
+          <button class="btn btn-presentation" id="btn-presentation-mode">
+            <span class="btn-icon">📽️</span>
+            <span>Presentation Mode</span>
+          </button>
+          <a href="https://beige-lines-fly.loca.lt" target="_blank" class="btn btn-online-badge" id="btn-online-link" title="Open Public Online URL">
+            <span class="online-pulse"></span>
+            <span>Online URL</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Workspace -->
+    <main class="main-workspace">
+      <!-- Left Sidebar: Controls & Parameter Tuning -->
+      <aside class="sidebar-panel">
+        <div class="panel-section">
+          <div class="section-header">
+            <h3>Simulation Engine</h3>
+            <span class="status-indicator live" id="sim-status-indicator">LIVE</span>
+          </div>
+
+          <div class="sim-actions-grid">
+            <button class="btn btn-primary" id="btn-toggle-play">
+              <span class="btn-icon" id="play-pause-icon">⏸</span>
+              <span id="play-pause-label">Pause</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-reset-sim">
+              <span class="btn-icon">🔄</span> Reset
+            </button>
+          </div>
+
+          <div class="control-group">
+            <div class="slider-header">
+              <label for="slider-speed">Engine Tick Speed</label>
+              <span class="slider-val" id="val-speed">1.0x</span>
+            </div>
+            <input type="range" id="slider-speed" min="0.25" max="3.0" step="0.25" value="1.0">
+          </div>
+
+          <div class="control-group">
+            <div class="slider-header">
+              <label for="slider-agent-count">Active Shopper Count</label>
+              <span class="slider-val" id="val-agent-count">50</span>
+            </div>
+            <input type="range" id="slider-agent-count" min="10" max="150" step="5" value="50">
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-header">
+            <h3>Orchestrator Settings</h3>
+          </div>
+
+          <div class="toggle-switch-row">
+            <div>
+              <div class="switch-title">Dynamic Rerouting</div>
+              <div class="switch-desc">Emit 2x token drops to divert crowd jams</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-dynamic-reroute" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="control-group">
+            <div class="slider-header">
+              <label for="slider-batch-size">L2 Rollup Batch Size</label>
+              <span class="slider-val" id="val-batch-size">8 txs</span>
+            </div>
+            <input type="range" id="slider-batch-size" min="4" max="25" step="1" value="8">
+          </div>
+
+          <div class="control-group">
+            <div class="slider-header">
+              <label for="slider-incentive-boost">Incentive Reward Boost</label>
+              <span class="slider-val" id="val-incentive-boost">2.0x</span>
+            </div>
+            <input type="range" id="slider-incentive-boost" min="1.2" max="3.5" step="0.1" value="2.0">
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-header">
+            <h3>Stress-Test Scenarios</h3>
+          </div>
+          <div class="event-injector-grid">
+            <button class="btn btn-stress" id="btn-stress-flash-sale">
+              <span>💎</span> Flash Sale (Jewelry)
+            </button>
+            <button class="btn btn-stress" id="btn-stress-rush-hour">
+              <span>🚶‍♂️</span> Rush Hour Surge (+25)
+            </button>
+            <button class="btn btn-stress" id="btn-stress-choke">
+              <span>⚠️</span> POS Network Choke
+            </button>
+            <button class="btn btn-stress" id="btn-stress-monsoon">
+              <span>🌧</span> Monsoon Dispersal
+            </button>
+          </div>
+        </div>
+
+        <!-- Agent Persona Distribution -->
+        <div class="panel-section">
+          <div class="section-header">
+            <h3>Shopper Personas</h3>
+          </div>
+          <div class="persona-legend">
+            <div class="persona-pill emerald">
+              <span class="persona-dot emerald"></span>
+              <span class="persona-name">Bargain Hunter</span>
+              <span class="persona-pct" id="pct-bargain">40%</span>
+            </div>
+            <div class="persona-pill cyan">
+              <span class="persona-dot cyan"></span>
+              <span class="persona-name">Window Shopper</span>
+              <span class="persona-pct" id="pct-window">25%</span>
+            </div>
+            <div class="persona-pill gold">
+              <span class="persona-dot gold"></span>
+              <span class="persona-name">High Spender</span>
+              <span class="persona-pct" id="pct-spender">15%</span>
+            </div>
+            <div class="persona-pill violet">
+              <span class="persona-dot violet"></span>
+              <span class="persona-name">Rush Shopper</span>
+              <span class="persona-pct" id="pct-rush">20%</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center: Physical Map Simulation Canvas -->
+      <section class="simulation-viewport">
+        <div class="viewport-header">
+          <div class="map-title-row">
+            <div class="map-title">
+              <span class="geo-icon">📍</span>
+              <span>Commercial Street Map Network (Bangalore)</span>
+            </div>
+            <div class="view-controls">
+              <button class="btn-chip active" id="btn-view-all">All Layers</button>
+              <button class="btn-chip" id="btn-view-congestion">Heatmap</button>
+              <button class="btn-chip" id="btn-view-routes">Incentive Trails</button>
+            </div>
+          </div>
+          <div class="map-stats-strip">
+            <span id="stat-tick-counter">Tick: 000</span>
+            <span class="divider">•</span>
+            <span id="stat-active-shoppers">Active Shoppers: 50</span>
+            <span class="divider">•</span>
+            <span id="stat-crowd-diverted">Rerouted: 0</span>
+            <span class="divider">•</span>
+            <span id="stat-settled-sales">Settled: $0.00</span>
+          </div>
+        </div>
+
+        <div class="canvas-container" id="canvas-wrapper">
+          <canvas id="simulation-canvas"></canvas>
+          
+          <!-- Floating Interactive Node/Agent Popover Tooltip -->
+          <div class="canvas-tooltip" id="canvas-tooltip" style="display: none;">
+            <div class="tooltip-header" id="tooltip-title">Store Name</div>
+            <div class="tooltip-body" id="tooltip-content">Details</div>
+          </div>
+
+          <!-- Active Orchestrator Notification Overlay -->
+          <div class="orchestrator-alert-banner" id="orchestrator-alert" style="display: none;">
+            <div class="alert-icon">⚡</div>
+            <div class="alert-text">
+              <strong id="alert-headline">ORCHESTRATOR REROUTING BROADCAST</strong>
+              <div id="alert-body">Shoe Haven is congested (85% cap). Emitting 2.0x Token Boost to Artisan Alley!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canvas Bottom Quick-Info Ticker -->
+        <div class="viewport-footer">
+          <div class="live-activity-stream" id="activity-stream">
+            <span class="stream-badge">LIVE STREAM</span>
+            <span class="stream-text" id="stream-text">Simulation initialized. Shoppers starting at Tasker Town Entrance...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Sidebar: Blockchain & Orchestrator Explorer -->
+      <aside class="blockchain-panel">
+        <div class="tabs-header">
+          <button class="tab-btn active" id="tab-btn-chain">Rollup Chain</button>
+          <button class="tab-btn" id="tab-btn-stores">Retail Nodes</button>
+          <button class="tab-btn" id="tab-btn-agent">Inspector</button>
+          <button class="tab-btn" id="tab-btn-a2ui">A2UI Protocol</button>
+        </div>
+
+        <!-- Tab 1: Blockchain Rollup Mempool & Blocks -->
+        <div class="tab-content active" id="tab-content-chain">
+          <!-- Pending Mempool Visualizer -->
+          <div class="panel-section">
+            <div class="section-header">
+              <h3>Orchestrator Mempool</h3>
+              <span class="badge-count" id="mempool-badge-count">0 pending</span>
+            </div>
+            <div class="mempool-container" id="mempool-list">
+              <div class="empty-state">Waiting for store POS transactions...</div>
+            </div>
+          </div>
+
+          <!-- Rollup Block Stream -->
+          <div class="panel-section flex-grow">
+            <div class="section-header">
+              <h3>Committed Rollup Blocks</h3>
+              <span class="badge-count" id="blocks-badge-count">0 blocks</span>
+            </div>
+            <div class="block-stream" id="block-stream">
+              <!-- Dynamically populated blocks -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Retailer Nodes Breakdown -->
+        <div class="tab-content" id="tab-content-stores">
+          <div class="panel-section">
+            <div class="section-header">
+              <h3>Store Nodes & POS Queues</h3>
+            </div>
+            <div class="retail-nodes-list" id="retail-nodes-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Detailed Inspector (Agent or Node) -->
+        <div class="tab-content" id="tab-content-agent">
+          <div class="panel-section">
+            <div class="section-header">
+              <h3 id="inspector-title">Entity Inspector</h3>
+              <span class="badge-count" id="inspector-type">Click on map</span>
+            </div>
+            <div class="inspector-card" id="inspector-details">
+              <div class="empty-state">
+                <span class="empty-icon">🔍</span>
+                <p>Click on any Shopper Agent or Store Node on the Commercial Street map to inspect its real-time state, wallet, queue, and cryptographic receipts.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: A2UI Protocol (Agent-to-User Interface) -->
+        <div class="tab-content" id="tab-content-a2ui">
+          <div class="panel-section">
+            <div class="section-header">
+              <h3>A2UI Native Renderer</h3>
+              <span class="badge-count" id="a2ui-status-badge">a2ui.org v1.0</span>
+            </div>
+            <div class="a2ui-rendered-container" id="a2ui-renderer">
+              <!-- Rendered A2UI Declarative UI Elements -->
+            </div>
+          </div>
+
+          <div class="panel-section flex-grow">
+            <div class="section-header">
+              <h3>A2UI Declarative JSON Stream</h3>
+              <button class="btn-copy-json" id="btn-copy-a2ui">Copy JSON</button>
+            </div>
+            <pre class="a2ui-json-viewer" id="a2ui-json-stream"><code>// Streaming A2UI declarative payload...</code></pre>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Presentation Mode Cinematic Overlay -->
+    <div class="presentation-overlay" id="presentation-overlay" style="display: none;">
+      <div class="presentation-top-bar">
+        <div class="pres-badge">
+          <span class="pulsing-orb"></span>
+          <span>KEYNOTE PRESENTATION MODE</span>
+        </div>
+        <div class="pres-controls">
+          <button class="btn btn-secondary btn-sm" id="btn-pres-prev">◀ Previous</button>
+          <span class="pres-step-tracker" id="pres-step-indicator">Slide 1 of 5</span>
+          <button class="btn btn-primary btn-sm" id="btn-pres-next">Next ▶</button>
+          <button class="btn btn-secondary btn-sm" id="btn-pres-autoplay">
+            <span id="pres-autoplay-icon">▶</span> Auto-Play
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-pres-exit">✕ Exit</button>
+        </div>
+      </div>
+
+      <div class="presentation-floating-card" id="pres-floating-card">
+        <div class="pres-card-header">
+          <span class="pres-slide-tag" id="pres-slide-tag">PART 1 • THE PROBLEM</span>
+          <h2 id="pres-slide-title">Commercial Street Decentralized Retail Network</h2>
+        </div>
+        <p class="pres-slide-body" id="pres-slide-body">
+          Commercial Street in Bangalore experiences heavy, erratic pedestrian foot traffic. Before deploying a smart contract retail ecosystem on-chain, this Multi-Agent Simulation models hundreds of autonomous shoppers, store POS systems, and dynamic L2 rollup batching.
+        </p>
+        <div class="pres-card-footer">
+          <span class="pres-speaker-tip" id="pres-speaker-tip">💡 Presenter Note: Highlight the 10 landmark physical nodes mapped on Commercial Street.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block Detail Modal -->
+    <div class="modal-backdrop" id="block-modal" style="display: none;">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-block-title">Rollup Block #1 Explorer</h2>
+          <button class="modal-close" id="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-block-content">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
